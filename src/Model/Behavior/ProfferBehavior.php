@@ -81,19 +81,16 @@ class ProfferBehavior extends Behavior
     {
         foreach ($this->config() as $field => $settings) {
         
-            //if ($entity->has($field) && is_array($entity->get($field))){
             if ($entity->has($field)){
                   
-                $list = $entity->get($field); // create a list from 
+                $list = $entity->get($field); // create a list from
                 
                 if(!is_array($entity->get($field))){ // if a single file upload push the object into an array
                     $list = [$list];           
                 }
 
-                //foreach($entity->get($field) as $key => $temp){
                 foreach($list as $file){
    
-                    //$entity->get($field)['error'] === UPLOAD_ERR_OK) {
                     if ($file['error'] === UPLOAD_ERR_OK) {
                     
                         // Allow path to be injected or set in config
@@ -112,13 +109,11 @@ class ProfferBehavior extends Behavior
 
                         $path->createPathFolder();
 
-                        //if ($this->moveUploadedFile($entity->get($field)['tmp_name'], $path->fullPath())) {
                         if ($this->moveUploadedFile($file['tmp_name'], $path->fullPath())) {
       
                             $imagePaths = [$path->fullPath()];
 
                             //$entity->set($field, $path->getFilename()); // is this reqquired now?
-                            //$entity->set($settings['dir'], $path->getSeed());
                             $file[$settings['dir']]=$path->getSeed();
 
                             // Only generate thumbnails for image uploads

@@ -37,12 +37,13 @@ class ProfferPath implements ProfferPathInterface
      */
     public function __construct(Table $table, Entity $entity, $field, array $settings)
     {
-        //debug($entity);
         if (isset($settings['root'])) {
             $this->setRoot($settings['root']);
         } else {
             $this->setRoot(WWW_ROOT . 'files');
         }
+        
+       // debug($entity);
 
         $this->setTable($table->alias());
         $this->setField($field);
@@ -52,9 +53,7 @@ class ProfferPath implements ProfferPathInterface
             $this->setPrefixes($settings['thumbnailSizes']);
         }
 
-        //$this->setFilename($entity->get($field));
-        $this->setFilename($entity);
-        
+        $this->setFilename($entity);      
     }
 
     /**
@@ -159,11 +158,14 @@ class ProfferPath implements ProfferPathInterface
      * @return void
      */
     public function setFilename($filename)
-    {
-        //if (is_array($filename) && isset($filename['name'])) {
-        if (isset($filename['name'])) {
+    {      
+        if (is_array($filename) && isset($filename['name'])) {
             $this->filename = $filename['name'];
-        } else {
+        }
+        elseif (is_object($filename) && isset($filename['name'])) { // for multiple file upload
+            $this->filename = $filename['name'];
+        }      
+        else {
             $this->filename = $filename;
         }
     }
@@ -200,9 +202,8 @@ class ProfferPath implements ProfferPathInterface
     public function generateSeed($seed = null)
     {
         if ($seed) {
-            //return $seed;
+            return $seed;
         }
-
         return Text::uuid();
     }
 
@@ -254,7 +255,6 @@ class ProfferPath implements ProfferPathInterface
         if (!file_exists($this->getFolder())) {
             return mkdir($this->getFolder(), 0777, true);
         }
-
         return true;
     }
 
